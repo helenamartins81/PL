@@ -3,34 +3,44 @@
 	#include <stdlib.h>
 	#include <string.h>
 	char *user;
-	void error();
-	int i =0;
+	char *id;
+	char *data;
+	int flag =0; //quando é o comentário "principal" de uma thread
+
+	int i =0, j=0;
 
 %}
 
-%option noyywrap yylineno
+
+%x COMMENTTHREAD IDENT
 
 
-%x COMENTARIO
 
-user ^<a" "href=.*>(.*)<\/a> 
-comentario <ol.*>
-
-%%
-{user}	{
-	user = strdup(yytext+108);
-	//printf("User: %s\n",user);
-}
-
-"<p>"\n*\s*(.*)\s*\n*(.*)\s*\n*(.*)	{
-	i++;
-	printf("%d - User %s -  %s\n",i,user,yytext);
-}
-
-.|\n	{}
+//user ^<a" "href=.*>[a-zA-Z0-9]+[^\<]*
 
 
 %%
+
+
+^<ol	{BEGIN COMMENTTHREAD;}
+
+<COMMENTTHREAD>\>\<li.[^>]*		{id = strdup(yytext+38); i++;  printf("%d - %s\n", i, id);}
+<COMMENTTHREAD>\.*\<li.[^"]*		{BEGIN IDENT;}
+
+<IDENT>data-comment-id\=\"[a-zA-Z0-9]+[^\"]*			{id = strdup(yytext+17); i++;  printf("%d - %s\n", i, id);}
+
+
+
+
+
+<*>(.|\n)  ;
+
+
+%%
+
+int yywrap(){
+    return 1;
+}
 
 int main() {
 	yylex();
