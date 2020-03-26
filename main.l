@@ -7,14 +7,15 @@
 	char *data;
 	int flag =0; //quando é o comentário "principal" de uma thread
 	char *comentario;
+	char *titulo;
 
 
-	int i =0, j=1, k=0, c=0;
+	int i =0, j=1, k=0, c=0, t=0;
 
 %}
 
 
-%x COMMENTTHREAD IDENT TIME TEXT
+%x COMMENTTHREAD IDENT TIME TEXT TITLE
 
 
 
@@ -34,13 +35,17 @@
 
 <COMMENTTHREAD>^<time						{BEGIN TIME;}
 
+
+<COMMENTTHREAD>^<span\sclass="comment.*"><i			{BEGIN TITLE;}
+
+
 <TIME>datetime\=\"[a-zA-Z0-9\.\-\:]*[^\"]*		{data = strdup(yytext+10); k++; printf("%d ----- %s\n", k, data); BEGIN COMMENTTHREAD;}
 
 <COMMENTTHREAD>\<p\>\n[ ]*						{BEGIN TEXT;}
 
 <TEXT>.*|\n*			{comentario = strdup(yytext); c++; printf("%d comentario: %s\n", c, comentario); BEGIN COMMENTTHREAD;}
 
-
+<TITLE>""|"[A-Z][a-z]*"		{titulo = strdup(yytext); t++; printf("%d ---- titulo: %s", t, titulo); BEGIN COMMENTTHREAD;}
 
 
 
