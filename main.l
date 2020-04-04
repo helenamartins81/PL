@@ -4,6 +4,7 @@
 	#include <string.h>
 	#include <time.h>
 
+	char *u = "{";
 	FILE * fp;
 	char *user;
 	char *id;
@@ -14,67 +15,84 @@
 	char *tempo;
 
 	char *replies[200];
-	int flags[200]={};
-	int nReplies[200]={};
 
+	int nReplies[200] = {};
+	char temReplies[200][5];
 	int convertTimestamp(char *tmp);
-	int nmrReplies(int i);
+	int nmrReplies();
 	int getReplies(int i);
 	int x;
 
-	int i =1, j=1, k=1, c=1, t=1, l=1; //DEPOIS PODE-SE APAGAR
+	int i =1; 
 	
-	int flag = 0, n = 0, y, flag2 = 0, m;
-	int nmr = 0;
+	int flag = 0, n = 0, flag2 = 0, nmr=0;
 
 %}
 
 
-%x COMMENTTHREAD IDENT TIME TEXT TIMESTAMP
-
+%x COMMENTTHREAD IDENT TIME TEXT TIMESTAMP 
 
 
 %%
 
 
-"<html><head>"	 {BEGIN COMMENTTHREAD;}
+"<html><head>"	 {BEGIN COMMENTTHREAD; }	
 
-<COMMENTTHREAD>^<ol.*list\"\>			{flag = 1; n=0; flag2=1; nmr = i; flags[nmr] = 1;} 	//flag serve para ver se está dentro das respostas flag2 serve para saber qual o comentário onde pertencem as respostas
-							
+	
 
-<COMMENTTHREAD>\>\<li.*id\=\"[^"]*	{id = strdup(yytext+38);  printf("%d - %s\n", i, id); fprintf(fp,"%s %s %s", "{\n\"id\":", id,"\n"); i++;}
+<COMMENTTHREAD>\>\<li.*id=\"[^"]*		{id = strdup(yytext+38); fprintf(fp, "%s\n\"id\":%s\n", u, id); i++;}
 
-<COMMENTTHREAD>^<li.[^"]*		{BEGIN IDENT;}
+<COMMENTTHREAD>^<li.[^"]*				{BEGIN IDENT;}
 
-<IDENT>data-comment-id\=\"[a-zA-Z0-9]+[^\"]*			{id = strdup(yytext+17);  printf("%d - %s\n", i, id); fprintf(fp,"%s %s %s", "{\n\"id\":", id,"\n");y = nmrReplies(i); i++; BEGIN COMMENTTHREAD;} 
+<IDENT>data\-comment\-id\=\"[a-zA-Z0-9]+[^\"]*			{if(flag) n++;
+														id = strdup(yytext+17); fprintf(fp, "%s\n\"id\":%s\n", u, id); i++; 
+														 
+														 BEGIN COMMENTTHREAD;} 
 
-<COMMENTTHREAD>^<a" "href=.*>[a-zA-Z0-9]+[^\<]* 	{user = strdup(yytext+108); printf("%d: %s \n",j,user); fprintf(fp,"%s %s %s", "\"user\":", user,"\n") ;j++;}
+<COMMENTTHREAD>^<a" "href=.*>[a-zA-Z0-9]+[^\<]* 	{user = strdup(yytext+108); fprintf(fp,"%s %s %s", "\"user\":", user,"\n") ;}
 
-<COMMENTTHREAD>^<span.*title\=\"[A-Z]*[a-z]*\"		{reputacao = strdup(yytext+63);  printf("%d reputação: %s\n", t, reputacao); fprintf(fp,"%s %s %s", "\"reputação\":", reputacao,"\n");t++;}
+<COMMENTTHREAD>^<span.*title\=\"[A-Z]*[a-z]*\"		{reputacao = strdup(yytext+63); fprintf(fp,"%s %s %s", "\"reputação\":", reputacao,"\n");}
 
 
 <COMMENTTHREAD>^<time						{BEGIN TIME;}
 
-<TIME>datetime\=\"[a-zA-Z0-9\.\-\:]*[^\"]*		{data = strdup(yytext+10); printf("%d data: %s\n", k, data); fprintf(fp,"%s %s %s", "\"date\":", data,"\n");BEGIN COMMENTTHREAD; k++; }
+<TIME>datetime\=\"[a-zA-Z0-9\.\-\:]*[^\"]*		{data = strdup(yytext+10); fprintf(fp,"%s %s %s", "\"date\":", data,"\n");BEGIN COMMENTTHREAD; }
 
 <COMMENTTHREAD>^<a.class\=.*\"\>					{BEGIN TIMESTAMP;}
 
-<TIMESTAMP>([0-9]|\.|\:|" ")*					{tempo = strdup(yytext); printf("%d tempo: %s\n", l, tempo); x=convertTimestamp(tempo); BEGIN COMMENTTHREAD; l++;}
+<TIMESTAMP>([0-9]|\.|\:|" ")*					{tempo = strdup(yytext); x=convertTimestamp(tempo); BEGIN COMMENTTHREAD; }
 
 <COMMENTTHREAD>\<p\>\n[ ]*						{BEGIN TEXT;}
 
-<TEXT>(\.*|\n+)*[^<]*			{comentario = strdup(yytext); printf("%d comentario: %s\n", c, comentario); 
-								fprintf(fp,"%s %s %s", "\"commentText\":",comentario ,"\n"); int v = getReplies(i); 
-								if(flags[n++] == 1){
-										fprintf(fp,"%s %s %s", "\"hasReplies\":", "TRUE","\n");
-								}else{
-										fprintf(fp,"%s %s %s", "\"hasReplies\":", "FALSE","\n");}
-								BEGIN COMMENTTHREAD;  c++;}
+<TEXT>(\.*|\n+)*[^<]*							{comentario = strdup(yytext); int v = getReplies(i); 
+												fprintf(fp,"%s %s %s", "\"commentText\":", comentario,"\n");
+												fprintf(fp,"%s", "\"likes\": 0\n"); BEGIN COMMENTTHREAD;  }
 
-<COMMENTTHREAD>^<\/ol>			{flag = 0;}
 
+<COMMENTTHREAD>^<\/div>\n<\/div>\n<form			{strcpy(temReplies[i-1], "FALSE"); 
+												 fprintf(fp,"\"hasReplies\":%s\n", temReplies[i-1]); 
+												 fprintf(fp,"\"numberOfReplies\":%d\n", 0);
+
+												 }
+
+<COMMENTTHREAD>^<\/div>\n<\/div>\n<\/li>		{strcpy(temReplies[i-1], "FALSE"); 
+												 fprintf(fp,"\"hasReplies\":%s\n", temReplies[i-1]); 
+												 fprintf(fp,"\"numberOfReplies\":%d\n", 0);
+												}
+
+<COMMENTTHREAD>^<\/ol>			{flag = 0; nReplies[nmr]=n;  n=0; fprintf(fp,"\"numberOfReplies\":%d\n", nReplies[nmr]);} 
+
+
+<COMMENTTHREAD>^<ol.*list\"\>					{strcpy(temReplies[i-1], "TRUE"); flag = 1; flag2 = 1; nmr=i;
+												 fprintf(fp,"\"hasReplies\":%s\n", temReplies[i-1]);
+}
+												 
+
+
+				 
 
 <*>(.|\n)  ;
+
 
 
 
@@ -94,25 +112,12 @@ int convertTimestamp(char *tmp){
 	t.tm_min = min;
 	result = mktime(&t); 
 	fprintf(fp,"%s %ld %s", "\"timestamp\":", result,"\n");
-	printf("timestamp: %ld\n", (long) result);
+	
 	return 0;
 
 }
 
-int nmrReplies(int i){  
-	if(flag){
-		if(flag2){
-		
-		nReplies[nmr] = 1;
-		flag2 = 0;
-		} else{
-			nReplies[nmr]++;
-		}
-		
 
-	}
-	return 0;
-}
 
 int getReplies(int i){
 	int m = i-2;
@@ -124,6 +129,7 @@ int getReplies(int i){
 
 
 
+
 int yywrap(){
     return 1;
 }
@@ -132,7 +138,7 @@ int main(int argc, char **argv) {
 	
 	fp = fopen("comments.json", "w+");
 	fprintf(fp, "\"commentThread\": [\n");
-	yylex();
+	yylex();	
 	
 	fprintf(fp, "]");
 	fclose(fp);
