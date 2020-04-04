@@ -2077,7 +2077,7 @@ int main(int argc, char **argv) {
 	fprintf(fp, "\"commentThread\": [\n");
 	yylex();	
 	
-	fprintf(fp, "]");
+	fprintf(fp, "]\n");
 	fclose(fp);
 	return 0;
 }
