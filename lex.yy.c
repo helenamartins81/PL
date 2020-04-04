@@ -369,12 +369,12 @@ static const flex_int16_t yy_accept[174] =
         0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
         0,    0,    0,   11,    0,    0,    0,    0,    0,    3,
         0,    0,    0,    0,    0,    0,    0,   11,    0,    0,
-        0,   15,    0,    0,    3,    0,    0,    7,    0,    0,
+        0,   16,    0,    0,    3,    0,    0,    7,    0,    0,
         0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
         0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
 
         2,    0,    0,    0,    0,    0,    0,    0,    0,    2,
-        2,    2,    0,    0,    0,    0,   16,    0,    0,    0,
+        2,    2,    0,    0,    0,    0,   15,    0,    0,    0,
         0,    2,    0,    0,    0,    5,    0,    0,    8,    0,
         2,    0,    9,    5,    5,    5,    5,    0,    0,    8,
         8,    1,    0,    0,    0,    0,    6,    0,    0,    0,
@@ -600,6 +600,7 @@ char *yytext;
 	#include <time.h>
 
 	char *u = "{";
+	char *p = "}";
 	FILE * fp;
 	char *user;
 	char *id;
@@ -614,13 +615,12 @@ char *yytext;
 	int nReplies[200] = {};
 	char temReplies[200][5];
 	int convertTimestamp(char *tmp);
-	int nmrReplies();
-	int getReplies(int i);
+
 	int x;
 
 	int i =1; 
 	
-	int flag = 0, n = 0, flag2 = 0, nmr=0;
+	int n=0;
 
 #line 626 "lex.yy.c"
  
@@ -920,7 +920,7 @@ case 2:
 /* rule 2 can match eol */
 YY_RULE_SETUP
 #line 43 "main.l"
-{id = strdup(yytext+38); fprintf(fp, "%s\n\"id\":%s\n", u, id); i++;}
+{id = strdup(yytext+38); fprintf(fp, "%s\n\"id\": \"%s\",\n", u, id); i++;}
 	YY_BREAK
 case 3:
 /* rule 3 can match eol */
@@ -932,8 +932,8 @@ case 4:
 /* rule 4 can match eol */
 YY_RULE_SETUP
 #line 47 "main.l"
-{if(flag) n++;
-														id = strdup(yytext+17); fprintf(fp, "%s\n\"id\":%s\n", u, id); i++; 
+{
+														id = strdup(yytext+17); fprintf(fp, "%s\n\"id\": \"%s\",\n", u, id); i++; 
 														 
 														 BEGIN COMMENTTHREAD;} 
 	YY_BREAK
@@ -941,12 +941,12 @@ case 5:
 /* rule 5 can match eol */
 YY_RULE_SETUP
 #line 52 "main.l"
-{user = strdup(yytext+108); fprintf(fp,"%s %s %s", "\"user\":", user,"\n") ;}
+{user = strdup(yytext+108); fprintf(fp, "\"user\": \"%s\",\n", user);}
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
 #line 54 "main.l"
-{reputacao = strdup(yytext+63); fprintf(fp,"%s %s %s", "\"reputação\":", reputacao,"\n");}
+{reputacao = strdup(yytext+63); fprintf(fp,"\"reputação\": %s,\n", reputacao);}
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
@@ -957,7 +957,7 @@ case 8:
 /* rule 8 can match eol */
 YY_RULE_SETUP
 #line 59 "main.l"
-{data = strdup(yytext+10); fprintf(fp,"%s %s %s", "\"date\":", data,"\n");BEGIN COMMENTTHREAD; }
+{data = strdup(yytext+10); fprintf(fp, "\"date\": \"%s\",\n", data);BEGIN COMMENTTHREAD; }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
@@ -979,17 +979,17 @@ case 12:
 /* rule 12 can match eol */
 YY_RULE_SETUP
 #line 67 "main.l"
-{comentario = strdup(yytext); int v = getReplies(i); 
-												fprintf(fp,"%s %s %s", "\"commentText\":", comentario,"\n");
-												fprintf(fp,"%s", "\"likes\": 0\n"); BEGIN COMMENTTHREAD;  }
+{comentario = strdup(yytext);  
+												fprintf(fp, "\"commentText\": \"%s\",\n", comentario);
+												fprintf(fp,"%s", "\"likes\": 0,\n"); BEGIN COMMENTTHREAD;  }
 	YY_BREAK
 case 13:
 /* rule 13 can match eol */
 YY_RULE_SETUP
 #line 72 "main.l"
 {strcpy(temReplies[i-1], "FALSE"); 
-												 fprintf(fp,"\"hasReplies\":%s\n", temReplies[i-1]); 
-												 fprintf(fp,"\"numberOfReplies\":%d\n", 0);
+												 fprintf(fp,"\"hasReplies\":\"%s\",\n", temReplies[i-1]); 
+												 fprintf(fp,"\"numberOfReplies\":\"%d\"\n%s\n", 0,p);
 
 												 }
 	YY_BREAK
@@ -998,34 +998,36 @@ case 14:
 YY_RULE_SETUP
 #line 78 "main.l"
 {strcpy(temReplies[i-1], "FALSE"); 
-												 fprintf(fp,"\"hasReplies\":%s\n", temReplies[i-1]); 
-												 fprintf(fp,"\"numberOfReplies\":%d\n", 0);
+												 fprintf(fp,"\"hasReplies\":\"%s\",\n", temReplies[i-1]); 
+												 fprintf(fp,"\"numberOfReplies\":\"%d\"\n%s\n", n++,p);
 												}
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 83 "main.l"
-{flag = 0; nReplies[nmr]=n;  n=0; fprintf(fp,"\"numberOfReplies\":%d\n", nReplies[nmr]);} 
+#line 84 "main.l"
+{strcpy(temReplies[i-1], "TRUE"); n=0; 
+												 fprintf(fp,"\"hasReplies\":\"%s\",\n", temReplies[i-1]);
+
+												 fprintf(fp,"\"replies\" : [\n");
+}
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 86 "main.l"
-{strcpy(temReplies[i-1], "TRUE"); flag = 1; flag2 = 1; nmr=i;
-												 fprintf(fp,"\"hasReplies\":%s\n", temReplies[i-1]);
-}
+#line 90 "main.l"
+{fprintf(fp,"]\n%s\n",p);} 
 	YY_BREAK
 case 17:
 /* rule 17 can match eol */
 YY_RULE_SETUP
-#line 94 "main.l"
+#line 95 "main.l"
 ;
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 99 "main.l"
+#line 100 "main.l"
 ECHO;
 	YY_BREAK
-#line 1029 "lex.yy.c"
+#line 1031 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(COMMENTTHREAD):
 case YY_STATE_EOF(IDENT):
@@ -2038,7 +2040,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 99 "main.l"
+#line 100 "main.l"
 
 
 int convertTimestamp(char *tmp){
@@ -2054,21 +2056,13 @@ int convertTimestamp(char *tmp){
 	t.tm_hour = hour;
 	t.tm_min = min;
 	result = mktime(&t); 
-	fprintf(fp,"%s %ld %s", "\"timestamp\":", result,"\n");
+	fprintf(fp, "\"timestamp\": \"%ld\",\n", result);
 	
 	return 0;
 
 }
 
 
-
-int getReplies(int i){
-	int m = i-2;
-	if(flag){
-		replies[m] =comentario;
-	}
-	return 0;
-}
 
 
 
