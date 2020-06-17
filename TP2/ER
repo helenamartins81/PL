@@ -1,5 +1,0 @@
-Sacar os nomes com números:
- -> [^:#][A-Za-z_]+[0-9]+.rdf
-
-Sacar nomes s/ números:
- -> [^:#][A-Za-z_]+.rdf
