@@ -1,0 +1,160 @@
+Gramática
+
+    0 $accept: Ontologia $end
+
+    1 Ontologia: START ListaTriplos
+
+    2 ListaTriplos: ListaTriplos Triplo
+    3             | Triplo
+
+    4 Triplo: Sujeito Predicado Objeto
+
+    5 Predicado: Pred
+
+    6 Sujeito: Nome
+
+    7 Objeto: Nome
+    8       | Conceito
+
+
+Terminais, com as regras aonde aparecem
+
+$end (0) 0
+error (256)
+START (258) 1
+Nome (259) 6 7
+Pred (260) 5
+Conceito (261) 8
+
+
+Não-terminais, com as regras aonde aparecem
+
+$accept (7)
+    à esquerda: 0
+Ontologia (8)
+    à esquerda: 1, à direita: 0
+ListaTriplos (9)
+    à esquerda: 2 3, à direita: 1 2
+Triplo (10)
+    à esquerda: 4, à direita: 2 3
+Predicado (11)
+    à esquerda: 5, à direita: 4
+Sujeito (12)
+    à esquerda: 6, à direita: 4
+Objeto (13)
+    à esquerda: 7 8, à direita: 4
+
+
+Estado0
+
+    0 $accept: . Ontologia $end
+
+    START  fazer shift, e ir para o estado 1
+
+    Ontologia  ir para o estado 2
+
+
+Estado1
+
+    1 Ontologia: START . ListaTriplos
+
+    Nome  fazer shift, e ir para o estado 3
+
+    ListaTriplos  ir para o estado 4
+    Triplo        ir para o estado 5
+    Sujeito       ir para o estado 6
+
+
+Estado2
+
+    0 $accept: Ontologia . $end
+
+    $end  fazer shift, e ir para o estado 7
+
+
+Estado3
+
+    6 Sujeito: Nome .
+
+    $default  reduzir usando a regra 6 (Sujeito)
+
+
+Estado4
+
+    1 Ontologia: START ListaTriplos .
+    2 ListaTriplos: ListaTriplos . Triplo
+
+    Nome  fazer shift, e ir para o estado 3
+
+    $default  reduzir usando a regra 1 (Ontologia)
+
+    Triplo   ir para o estado 8
+    Sujeito  ir para o estado 6
+
+
+Estado5
+
+    3 ListaTriplos: Triplo .
+
+    $default  reduzir usando a regra 3 (ListaTriplos)
+
+
+Estado6
+
+    4 Triplo: Sujeito . Predicado Objeto
+
+    Pred  fazer shift, e ir para o estado 9
+
+    Predicado  ir para o estado 10
+
+
+Estado7
+
+    0 $accept: Ontologia $end .
+
+    $default  aceite
+
+
+Estado8
+
+    2 ListaTriplos: ListaTriplos Triplo .
+
+    $default  reduzir usando a regra 2 (ListaTriplos)
+
+
+Estado9
+
+    5 Predicado: Pred .
+
+    $default  reduzir usando a regra 5 (Predicado)
+
+
+Estado10
+
+    4 Triplo: Sujeito Predicado . Objeto
+
+    Nome      fazer shift, e ir para o estado 11
+    Conceito  fazer shift, e ir para o estado 12
+
+    Objeto  ir para o estado 13
+
+
+Estado11
+
+    7 Objeto: Nome .
+
+    $default  reduzir usando a regra 7 (Objeto)
+
+
+Estado12
+
+    8 Objeto: Conceito .
+
+    $default  reduzir usando a regra 8 (Objeto)
+
+
+Estado13
+
+    4 Triplo: Sujeito Predicado Objeto .
+
+    $default  reduzir usando a regra 4 (Triplo)
