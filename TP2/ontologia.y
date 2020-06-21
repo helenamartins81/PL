@@ -1,42 +1,73 @@
 %{
-#include <stdio.h>
-#include <string.h>
+	#define _GNU_SOURCE
+    #include <string.h>
+    #include <stdio.h>
+    #include<stdlib.h>
 
+    int yylex(void);
+    int yyerror(char* s);
 
-int yylex();
-int yyerror();	
-char* yytext;
-int yylineno;
+//asprintf calcula o tamanho da string, aloca memória e escreve lá a string
 
 %}
 
 %union{
-    char* id;
+    char* str;
 }
 
-%token START 
-%token <id>Relacao Conceito Progenitor Propriedade Sujeito
-%type <id>Triplo Objeto Predicado
+%token START
+%token<str> nome pessoa masculino feminino rel string num 
+%type<str> Individuals Individual Sujeito Conceito Pessoa Sexo Predicado Relacao Objeto
+
+%left ',' ';'
+
 
 %%
 
-Ontologia : START ListaTriplos
+
+Ontologia : START Individuals  			{FILE* file = fopen("graph.tmp","w+"); fprintf(file, "digraph familytree {\n\t");}
           ;
 
-ListaTriplos : ListaTriplos Triplo 			
-             | Triplo                       
-             ;
 
-Triplo : Sujeito Predicado Objeto 			{printf("%s    %s   %s", $1, $2, $3);}
-       ;
+Individuals : Individual
+			| Individuals Individual
+			;
 
-Predicado : Relacao							{$$ = $1; printf("Apanhou Relacao %s\n", $1);}
-          | Propriedade				    	{$$ = $1; printf("Apanhou Proprieadade %s\n", $1);}
-          ;
+Individual : Sujeito ',' Conceito ';' Predicado ';' Objeto '.'
+		   | Individual ',' Objeto ';'
+		   | Individual ';' Predicado ';' Objeto
+		   ;
 
-Objeto : Progenitor							{$$ = $1; printf("Apanhou Progenitor %s\n", $1);}
-	   | Conceito							{$$ = $1; printf("Apanhou Conceito %s\n", $1);}
-	   ;
+Sujeito : nome							
+		;	
+
+Conceito : Pessoa
+		 | Sexo
+		 ;
+
+
+Pessoa : pessoa			{$$ = $1;}
+	   ;			 
+
+Sexo : masculino		{$$ = $1;}				
+	 | feminino			{$$ = $1;}			
+	 ;	
+
+
+
+Predicado : Relacao
+		  ;
+
+
+Relacao : rel				{$$ = $1;}		
+		;
+
+Objeto : Sujeito						
+	   | Conceito						
+	   | string							
+	   | num							
+	   ;	
+
 
 
 
@@ -44,20 +75,12 @@ Objeto : Progenitor							{$$ = $1; printf("Apanhou Progenitor %s\n", $1);}
 
 #include "lex.yy.c"
 
-int yyerror()
-{
-  printf("Erro sintatico ou lexico na linha: %d, com o texto: %s\n", yylineno, yytext);
+int yyerror(char *s) {
+    printf("Erro: %s \n",s );
+    return 1;
 }
 
-int main(int argc, char **argv) {
-	
-	FILE* fp;
-	fp = fopen("graph.tmp", "w+");
-	fprintf(fp, "digraph familytree {\n\t");
-	
-	yyparse();	
-	
-	fprintf(fp, "}\n");
-	fclose(fp);
-	return 0;
+int main(){
+    yyparse();
+    return 0;
 }
