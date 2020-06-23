@@ -13,59 +13,63 @@
 
 %union{
     char* str;
+	int value;
 }
 
-%token START
-%token<str> nome pessoa masculino feminino rel string num 
-%type<str> Individuals Individual Sujeito Conceito Pessoa Sexo Predicado Relacao Objeto
+%token<str> STRING
+%token<value> NUM
+%token<str> NOME PESSOA MASCULINO FEMININO RELACAO
+%type<str> Individuals Individual Sujeito Conceito Pessoa Sexo Predicado Objeto ListaPredicados
 
 %left ',' ';'
 
-
+//FILE* file = fopen("graph.gv","w+"); fprintf(file, "digraph familytree {\n%s\n}\n", $1);
 %%
 
 
-Ontologia : START Individuals  			{FILE* file = fopen("graph.tmp","w+"); fprintf(file, "digraph familytree {\n\t");}
+Ontologia : Individuals  										{ printf("\n%s\n", $1);}
           ;
 
 
-Individuals : Individual
-			| Individuals Individual
+Individuals : Individual										{asprintf(&$$, "%s", $1);}
+			| Individual Individuals							{asprintf(&$$, "%s, %s", $1, $2);}
 			;
 
-Individual : Sujeito ',' Conceito ';' Predicado ';' Objeto '.'
-		   | Individual ',' Objeto ';'
-		   | Individual ';' Predicado ';' Objeto
+Individual : ':'Sujeito ',' ':'Conceito ';' ListaPredicados '.'	{asprintf(&$$, "%s , %s, %s", $2, $5, $7);}
+		   | Individual ',' Objeto ';'							{asprintf(&$$, "%s , %s", $1, $3);}
+		   | Individual ';' ListaPredicados					    {asprintf(&$$, "%s , %s", $1, $3);}
 		   ;
 
-Sujeito : nome							
+Sujeito : NOME													{asprintf(&$$, "%s", $1);}		
 		;	
 
-Conceito : Pessoa
-		 | Sexo
+Conceito : Pessoa												{asprintf(&$$, "%s", $1);}
+		 | Sexo													{asprintf(&$$, "%s", $1);}
 		 ;
 
 
-Pessoa : pessoa			{$$ = $1;}
+ListaPredicados : ':'Predicado ':'Objeto '.'					{asprintf(&$$, "%s , %s", $2, $4);}
+				| ':'Predicado ':'Objeto ';' ListaPredicados    {asprintf(&$$, "%s , %s, %s", $2, $4, $6);}
+
+
+Pessoa : ':'PESSOA												{asprintf(&$$, "%s", $2);}
 	   ;			 
 
-Sexo : masculino		{$$ = $1;}				
-	 | feminino			{$$ = $1;}			
+Sexo : ':'MASCULINO												{asprintf(&$$, "%s", $2);}			
+	 | ':'FEMININO												{asprintf(&$$, "%s", $2);}			
 	 ;	
 
 
 
-Predicado : Relacao
-		  ;
+Predicado : RELACAO												{asprintf(&$$, "%s", $1);}
+		  ;		
 
 
-Relacao : rel				{$$ = $1;}		
-		;
 
-Objeto : Sujeito						
-	   | Conceito						
-	   | string							
-	   | num							
+Objeto : Sujeito												{asprintf(&$$, "%s", $1);}		
+	   | Conceito												{asprintf(&$$, "%s", $1);}		
+	   | STRING													{asprintf(&$$, "%s", $1);}		
+	   | NUM													{asprintf(&$$, "%d", $1);}		
 	   ;	
 
 
