@@ -5,13 +5,15 @@
 #include "y.tab.h"
 %}
 
+%option yylineno
 %option noyywrap
-
-%x REL OBJETO SEXO
 
 %%
 
-[,;.:]   return yytext[0];
+[ \t\r\n]   ;
+
+
+[,;\.:]   return yytext[0];
 
 ^@(.|\n)+\#$	                {;}
 
@@ -19,28 +21,22 @@
 
 ^:[A-Za-z_]+([0-9]{4})? 		            {yylval.str = strdup(yytext); return NOME;}
 
+:Pessoa                                     {return PESSOA;}
 
-^[ ]+:Pessoa                                {yylval.str = strdup("Pessoa"); return PESSOA;}
+:Sexo" ":Masculino                          {return MASCULINO;}
 
-^[ ]+:Sexo" ":                              {BEGIN SEXO;}
+:Sexo" ":Feminino                           {return FEMININO;} 
+ 
+:[a-z][a-zA-Z]+" "                          {yylval.str = strdup(yytext); return RELACAO;}
 
-<SEXO>[A-Za-z]+                             {yylval.str = strdup(yytext);
-                                            if(strcmp(yytext, "Masculino")==0) return MASCULINO;
-                                            else return FEMININO;}  
+:[A-Za-z_]+([0-9]{4})?" "[\.;]                {yylval.str = strdup(yytext); return NOME;}
 
-^[ ]+:                                      {BEGIN REL;}
+[A-Za-z]+                                   {yylval.str = strdup(yytext); return STRING;}  //quando é uma string
 
-<REL>[a-zA-Z]+" "                           {yylval.str = strdup(yytext);  return RELACAO; BEGIN OBJETO;}
-
-<OBJETO>:[A-Za-z_]+([0-9]{4})?              {yylval.str = strdup(yytext+2); return NOME;}  //quando é um sujeito
-
-<OBJETO>[A-Za-z]+                           {yylval.str = strdup(yytext); return STRING;}  //quando é uma string
-
-<OBJETO>[0-9]+                              {yylval.value = atoi(yytext); return NUM;}     //quando é um num
+[0-9]+                                      {yylval.value = atoi(yytext); return NUM;}     //quando é um num
 
 
-
-(.|\n)			{;}
+.			{;}
 
 
 %%

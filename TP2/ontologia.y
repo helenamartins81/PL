@@ -1,24 +1,37 @@
 %{
 	#define _GNU_SOURCE
-    #include <string.h>
-    #include <stdio.h>
-    #include<stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include "estrutura.h"
+extern int yylex();
+extern int yylineno;
+extern char *yytext;
+int yyerror();
 
-    int yylex(void);
-    int yyerror(char* s);
 
-//asprintf calcula o tamanho da string, aloca memória e escreve lá a string
+
+
+
+Relacoes* relacoes;
+char * conceito;
+char* obj;
+char* relacao;
+
+
 
 %}
+%parse-param{void* o}
 
 %union{
     char* str;
 	int value;
 }
 
-%token<str> STRING
-%token<value> NUM
-%token<str> NOME PESSOA MASCULINO FEMININO RELACAO
+
+%token<str> NOME PESSOA MASCULINO FEMININO RELACAO STRING 
+%token NUM
+%type<value>NUM
+
 %type<str> Individuals Individual Sujeito Conceito Pessoa Sexo Predicado Objeto ListaPredicados
 
 %left ',' ';'
@@ -27,64 +40,70 @@
 %%
 
 
-Ontologia : Individuals  										{ printf("\n%s\n", $1);}
+Ontologia : Individuals  												{ printf("\n%s\n", $1);}
           ;
 
 
-Individuals : Individual										{asprintf(&$$, "%s", $1);}
-			| Individual Individuals							{asprintf(&$$, "%s, %s", $1, $2);}
+Individuals : Individuals Individual									{}
+			| Individual												{}
 			;
 
-Individual : ':'Sujeito ',' ':'Conceito ';' ListaPredicados '.'	{asprintf(&$$, "%s , %s, %s", $2, $5, $7);}
-		   | Individual ',' Objeto ';'							{asprintf(&$$, "%s , %s", $1, $3);}
-		   | Individual ';' ListaPredicados					    {asprintf(&$$, "%s , %s", $1, $3);}
+Individual : ':'Sujeito ',' ':'Conceito ';' ListaPredicados '.'			{printf("%s %s %s", $2, $5, $7);}
+		   | Individual ',' Objeto ';'							
+		   | Individual ';' ListaPredicados					    
 		   ;
 
-Sujeito : NOME													{asprintf(&$$, "%s", $1);}		
+Sujeito : NOME   														{$$ = strdup($1); adicionaIndividuo(o,$1, conceito, relacoes);}		
 		;	
 
-Conceito : Pessoa												{asprintf(&$$, "%s", $1);}
-		 | Sexo													{asprintf(&$$, "%s", $1);}
+Conceito : Pessoa														
+		 | Sexo													
 		 ;
 
 
-ListaPredicados : ':'Predicado ':'Objeto '.'					{asprintf(&$$, "%s , %s", $2, $4);}
-				| ':'Predicado ':'Objeto ';' ListaPredicados    {asprintf(&$$, "%s , %s, %s", $2, $4, $6);}
+ListaPredicados : ':'Predicado ':'Objeto '.'							{printf("%s %s", $2, $4);}			
+				| ':'Predicado ':'Objeto ';' ListaPredicados    		{printf("%s %s %s", $2, $4, $6);}
 
 
-Pessoa : ':'PESSOA												{asprintf(&$$, "%s", $2);}
+
+Objeto : Sujeito														{obj = strdup($1);}								
+	   | Conceito														{obj = strdup($1);}								
+	   | STRING															{obj = strdup($1);}						
+	   | NUM															{printf("%d", $1);}					
+	   ;	
+
+
+Pessoa : ':'PESSOA														{conceito = strdup($2); }
 	   ;			 
 
-Sexo : ':'MASCULINO												{asprintf(&$$, "%s", $2);}			
-	 | ':'FEMININO												{asprintf(&$$, "%s", $2);}			
+Sexo : ':'MASCULINO														{conceito = strdup($2);}			
+	 | ':'FEMININO														{conceito = strdup($2);}			
 	 ;	
 
 
 
-Predicado : RELACAO												{asprintf(&$$, "%s", $1);}
+Predicado : RELACAO														{relacao = strdup($1); adicionaRelacao(*relacoes, relacao, obj);}
 		  ;		
 
 
 
-Objeto : Sujeito												{asprintf(&$$, "%s", $1);}		
-	   | Conceito												{asprintf(&$$, "%s", $1);}		
-	   | STRING													{asprintf(&$$, "%s", $1);}		
-	   | NUM													{asprintf(&$$, "%d", $1);}		
-	   ;	
 
 
 
 
 %%
 
-#include "lex.yy.c"
-
-int yyerror(char *s) {
-    printf("Erro: %s \n",s );
-    return 1;
-}
-
-int main(){
-    yyparse();
+int yyerror(){
+    printf("Erro Sintático ou Léxico na linha: %d, com o texto: %s\n", yylineno, yytext);
     return 0;
 }
+
+
+int main(){
+	Ontologia o = inicializa();
+    yyparse(o);
+	imprimirInfo(o);
+	
+    return 0;
+}
+
