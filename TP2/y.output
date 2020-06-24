@@ -1,0 +1,411 @@
+Grammar
+
+    0 $accept: Ontologia $end
+
+    1 Ontologia: Individuals
+
+    2 Individuals: Individuals Individual
+    3            | Individual
+
+    4 Individual: ':' Sujeito ',' ':' Conceito ';' ListaPredicados '.'
+    5           | Individual ',' Objeto ';'
+    6           | Individual ';' ListaPredicados
+
+    7 Sujeito: NOME
+
+    8 Conceito: Pessoa
+    9         | Sexo
+
+   10 ListaPredicados: ':' Predicado ':' Objeto '.'
+   11                | ':' Predicado ':' Objeto ';' ListaPredicados
+
+   12 Objeto: Sujeito
+   13       | Conceito
+   14       | STRING
+   15       | NUM
+
+   16 Pessoa: ':' PESSOA
+
+   17 Sexo: ':' MASCULINO
+   18     | ':' FEMININO
+
+   19 Predicado: RELACAO
+
+
+Terminals, with rules where they appear
+
+    $end (0) 0
+    ',' (44) 4 5
+    '.' (46) 4 10
+    ':' (58) 4 10 11 16 17 18
+    ';' (59) 4 5 6 11
+    error (256)
+    NOME <str> (258) 7
+    PESSOA <str> (259) 16
+    MASCULINO <str> (260) 17
+    FEMININO <str> (261) 18
+    RELACAO <str> (262) 19
+    STRING <str> (263) 14
+    NUM <value> (264) 15
+
+
+Nonterminals, with rules where they appear
+
+    $accept (14)
+        on left: 0
+    Ontologia (15)
+        on left: 1
+        on right: 0
+    Individuals <str> (16)
+        on left: 2 3
+        on right: 1 2
+    Individual <str> (17)
+        on left: 4 5 6
+        on right: 2 3 5 6
+    Sujeito <str> (18)
+        on left: 7
+        on right: 4 12
+    Conceito <str> (19)
+        on left: 8 9
+        on right: 4 13
+    ListaPredicados <str> (20)
+        on left: 10 11
+        on right: 4 6 11
+    Objeto <str> (21)
+        on left: 12 13 14 15
+        on right: 5 10 11
+    Pessoa <str> (22)
+        on left: 16
+        on right: 8
+    Sexo <str> (23)
+        on left: 17 18
+        on right: 9
+    Predicado <str> (24)
+        on left: 19
+        on right: 10 11
+
+
+State 0
+
+    0 $accept: . Ontologia $end
+
+    ':'  shift, and go to state 1
+
+    Ontologia    go to state 2
+    Individuals  go to state 3
+    Individual   go to state 4
+
+
+State 1
+
+    4 Individual: ':' . Sujeito ',' ':' Conceito ';' ListaPredicados '.'
+
+    NOME  shift, and go to state 5
+
+    Sujeito  go to state 6
+
+
+State 2
+
+    0 $accept: Ontologia . $end
+
+    $end  shift, and go to state 7
+
+
+State 3
+
+    1 Ontologia: Individuals .
+    2 Individuals: Individuals . Individual
+
+    ':'  shift, and go to state 1
+
+    $default  reduce using rule 1 (Ontologia)
+
+    Individual  go to state 8
+
+
+State 4
+
+    3 Individuals: Individual .
+    5 Individual: Individual . ',' Objeto ';'
+    6           | Individual . ';' ListaPredicados
+
+    ','  shift, and go to state 9
+    ';'  shift, and go to state 10
+
+    $default  reduce using rule 3 (Individuals)
+
+
+State 5
+
+    7 Sujeito: NOME .
+
+    $default  reduce using rule 7 (Sujeito)
+
+
+State 6
+
+    4 Individual: ':' Sujeito . ',' ':' Conceito ';' ListaPredicados '.'
+
+    ','  shift, and go to state 11
+
+
+State 7
+
+    0 $accept: Ontologia $end .
+
+    $default  accept
+
+
+State 8
+
+    2 Individuals: Individuals Individual .
+    5 Individual: Individual . ',' Objeto ';'
+    6           | Individual . ';' ListaPredicados
+
+    ','  shift, and go to state 9
+    ';'  shift, and go to state 10
+
+    $default  reduce using rule 2 (Individuals)
+
+
+State 9
+
+    5 Individual: Individual ',' . Objeto ';'
+
+    NOME    shift, and go to state 5
+    STRING  shift, and go to state 12
+    NUM     shift, and go to state 13
+    ':'     shift, and go to state 14
+
+    Sujeito   go to state 15
+    Conceito  go to state 16
+    Objeto    go to state 17
+    Pessoa    go to state 18
+    Sexo      go to state 19
+
+
+State 10
+
+    6 Individual: Individual ';' . ListaPredicados
+
+    ':'  shift, and go to state 20
+
+    ListaPredicados  go to state 21
+
+
+State 11
+
+    4 Individual: ':' Sujeito ',' . ':' Conceito ';' ListaPredicados '.'
+
+    ':'  shift, and go to state 22
+
+
+State 12
+
+   14 Objeto: STRING .
+
+    $default  reduce using rule 14 (Objeto)
+
+
+State 13
+
+   15 Objeto: NUM .
+
+    $default  reduce using rule 15 (Objeto)
+
+
+State 14
+
+   16 Pessoa: ':' . PESSOA
+   17 Sexo: ':' . MASCULINO
+   18     | ':' . FEMININO
+
+    PESSOA     shift, and go to state 23
+    MASCULINO  shift, and go to state 24
+    FEMININO   shift, and go to state 25
+
+
+State 15
+
+   12 Objeto: Sujeito .
+
+    $default  reduce using rule 12 (Objeto)
+
+
+State 16
+
+   13 Objeto: Conceito .
+
+    $default  reduce using rule 13 (Objeto)
+
+
+State 17
+
+    5 Individual: Individual ',' Objeto . ';'
+
+    ';'  shift, and go to state 26
+
+
+State 18
+
+    8 Conceito: Pessoa .
+
+    $default  reduce using rule 8 (Conceito)
+
+
+State 19
+
+    9 Conceito: Sexo .
+
+    $default  reduce using rule 9 (Conceito)
+
+
+State 20
+
+   10 ListaPredicados: ':' . Predicado ':' Objeto '.'
+   11                | ':' . Predicado ':' Objeto ';' ListaPredicados
+
+    RELACAO  shift, and go to state 27
+
+    Predicado  go to state 28
+
+
+State 21
+
+    6 Individual: Individual ';' ListaPredicados .
+
+    $default  reduce using rule 6 (Individual)
+
+
+State 22
+
+    4 Individual: ':' Sujeito ',' ':' . Conceito ';' ListaPredicados '.'
+
+    ':'  shift, and go to state 14
+
+    Conceito  go to state 29
+    Pessoa    go to state 18
+    Sexo      go to state 19
+
+
+State 23
+
+   16 Pessoa: ':' PESSOA .
+
+    $default  reduce using rule 16 (Pessoa)
+
+
+State 24
+
+   17 Sexo: ':' MASCULINO .
+
+    $default  reduce using rule 17 (Sexo)
+
+
+State 25
+
+   18 Sexo: ':' FEMININO .
+
+    $default  reduce using rule 18 (Sexo)
+
+
+State 26
+
+    5 Individual: Individual ',' Objeto ';' .
+
+    $default  reduce using rule 5 (Individual)
+
+
+State 27
+
+   19 Predicado: RELACAO .
+
+    $default  reduce using rule 19 (Predicado)
+
+
+State 28
+
+   10 ListaPredicados: ':' Predicado . ':' Objeto '.'
+   11                | ':' Predicado . ':' Objeto ';' ListaPredicados
+
+    ':'  shift, and go to state 30
+
+
+State 29
+
+    4 Individual: ':' Sujeito ',' ':' Conceito . ';' ListaPredicados '.'
+
+    ';'  shift, and go to state 31
+
+
+State 30
+
+   10 ListaPredicados: ':' Predicado ':' . Objeto '.'
+   11                | ':' Predicado ':' . Objeto ';' ListaPredicados
+
+    NOME    shift, and go to state 5
+    STRING  shift, and go to state 12
+    NUM     shift, and go to state 13
+    ':'     shift, and go to state 14
+
+    Sujeito   go to state 15
+    Conceito  go to state 16
+    Objeto    go to state 32
+    Pessoa    go to state 18
+    Sexo      go to state 19
+
+
+State 31
+
+    4 Individual: ':' Sujeito ',' ':' Conceito ';' . ListaPredicados '.'
+
+    ':'  shift, and go to state 20
+
+    ListaPredicados  go to state 33
+
+
+State 32
+
+   10 ListaPredicados: ':' Predicado ':' Objeto . '.'
+   11                | ':' Predicado ':' Objeto . ';' ListaPredicados
+
+    ';'  shift, and go to state 34
+    '.'  shift, and go to state 35
+
+
+State 33
+
+    4 Individual: ':' Sujeito ',' ':' Conceito ';' ListaPredicados . '.'
+
+    '.'  shift, and go to state 36
+
+
+State 34
+
+   11 ListaPredicados: ':' Predicado ':' Objeto ';' . ListaPredicados
+
+    ':'  shift, and go to state 20
+
+    ListaPredicados  go to state 37
+
+
+State 35
+
+   10 ListaPredicados: ':' Predicado ':' Objeto '.' .
+
+    $default  reduce using rule 10 (ListaPredicados)
+
+
+State 36
+
+    4 Individual: ':' Sujeito ',' ':' Conceito ';' ListaPredicados '.' .
+
+    $default  reduce using rule 4 (Individual)
+
+
+State 37
+
+   11 ListaPredicados: ':' Predicado ':' Objeto ';' ListaPredicados .
+
+    $default  reduce using rule 11 (ListaPredicados)

@@ -8,6 +8,7 @@ typedef struct relacoes
 {
     char* relacao;
     char* objeto;
+    int sucesso;
     struct relacoes *next;
 }*Relacoes;
 
@@ -16,7 +17,8 @@ typedef struct relacoes
 typedef struct individuo{
     char* sujeito;
     char* conceito;
-    Relacoes* relacoes;
+    int sucesso;
+     Relacoes relacoes;
 }*Individuo ;
 
 
@@ -24,7 +26,8 @@ typedef struct individuo{
 
 typedef struct ontologia
 {
-    Individuo* individuo;
+    Individuo individuo;
+    int sucesso;
     struct ontologia *next;
 }*Ontologia;
 
@@ -34,7 +37,7 @@ typedef struct ontologia
 
 Ontologia inicializa();
 void adicionaIndividuo(Ontologia ont, char* nome, char* conceito, Relacoes* relacoes);
-void adicionaRelacao(Relacoes relacoes, char* rel, char* obj);
+void adicionaRelacaoComplex(Relacoes relacoes, char* rel, char* obj);
 void imprimirInfo(Ontologia o);
 
 
