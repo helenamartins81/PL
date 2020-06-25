@@ -2,60 +2,50 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-//#include "y.tab.h"
-//%option yylineno
-//%option noyywrap
+#include "y.tab.h"
+
 %}
+
+%option yylineno
+%option noyywrap
 
 %x REL
 
 
 %%
 
-^@(.|\n)+\#$	                {;}
+[\n \t]*                              {;}
 
-\#.*                            {;}     
+[\.,;]                                 {return yytext[0];}
 
-^:[A-Za-z_]+([0-9]{4})?		           printf("%s\n",yytext+1);  // {yylval.str = strdup(yytext); return NOME;}
+^@(.|\n)+\#$	                       {;}
 
-:type                   {;}
-:NamedIndividual        {;}
+\#.*                                   {;}     
 
-":Pessoa"                                   printf("%s\n",yytext+1);  // {return PESSOA;}
+^:[A-Za-z_]+([0-9]{4})?		           {yylval.str = strdup(yytext+1); return SUJEITO;}
 
-":Sexo :Masculino"                         printf("%s\n",yytext+1);  //{return MASCULINO;}
+:type                                  {;}
+:NamedIndividual                       {;}
 
-":Sexo :Feminino"                         printf("%s\n",yytext+1);  // {return FEMININO;} 
- 
-":temMae"                          {printf("%s\n",yytext+1); BEGIN REL;} //{yylval.str = strdup(yytext); return RELACAO;}
-":temPai"                         {printf("%s\n",yytext+1);  BEGIN REL;} //{yylval.str = strdup(yytext); return RELACAO;}
-":temFilho"                      {printf("%s\n",yytext+1); BEGIN REL;}   // {yylval.str = strdup(yytext); return RELACAO;}
-":temAvô"                         {printf("%s\n",yytext+1); BEGIN REL;}  //{yylval.str = strdup(yytext); return RELACAO;}
-":temAvó"                          {printf("%s\n",yytext+1); BEGIN REL;}//{yylval.str = strdup(yytext); return RELACAO;}
+:Pessoa                                {printf("\nAQUI!\n");yylval.str = strdup(yytext+1); return CONCEITO;}
 
-
-
-<REL>:[A-Za-z_]+([0-9]{4})?" "[\.;]            {printf("%s\n",yytext+1); BEGIN INITIAL;}  // {yylval.str = strdup(yytext); return NOME;}
-
-:[A-Za-z]+                                printf("%s\n",yytext);   // {yylval.str = strdup(yytext); return STRING;}  //quando é uma string
-
-:[0-9]+                                   printf("%s\n",yytext);   // {yylval.value = atoi(yytext); return NUM;}     //quando é um num
+":temMae"                              {yylval.str = strdup(yytext+1); return PREDICADO;} 
+":temPai"                              {yylval.str = strdup(yytext+1); return PREDICADO;} 
+":temFilho"                            {yylval.str = strdup(yytext+1); return PREDICADO;} 
+":temAvô"                              {yylval.str = strdup(yytext+1); return PREDICADO;} 
+":temAvó"                              {yylval.str = strdup(yytext+1); return PREDICADO;} 
 
 
-.|\n			{;}
+
+<REL>" ":[A-Za-z_]+([0-9]{4})?" "[\.;]    {yylval.str = strdup(yytext+1); return SUJEITO;}  // {yylval.str = strdup(yytext); return NOME;}
+
+:[A-Za-z]+                                {yylval.str = strdup(yytext+1); return STRING;}   // {yylval.str = strdup(yytext); return STRING;}  //quando é uma string
+
+:[0-9]+                                   {yylval.value = atoi(strdup(yytext+1)); return NUM;}   // {yylval.value = atoi(yytext); return NUM;}     //quando é um num
+
+.           {;}
 
 
 %%
 
 
-int yywrap(){
-    return 1;
-}
-
-
-int main(int argc, char **argv) {
-
-	yylex();	
-
-	return 0;
-}

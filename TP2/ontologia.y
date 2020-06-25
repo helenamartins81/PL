@@ -21,48 +21,45 @@ char* relacao;
 	int value;
 }
 
-%token START
 %token<str> SUJEITO
-%token<str> TIPOS
-%token<str> RELACAO
 %token<str> CONCEITO
-%type<str> PREDICADOS OBJETO TRIPLOS ONTOLOGIA LISTADUPLOS
+%token<str> STRING
+%token<str> PREDICADO
+%token<value> NUM
+%type<str> Triplo ListaDuplos Objeto Ontologia
 
 
 %%
 
-Programa : START ONTOLOGIA											{printf("\n%s\n", $2);}
+Programa : Ontologia											{printf("\n%s\n", $1);}
 		 ;
 
-ONTOLOGIA : TRIPLOS													{asprintf(&$$, "\n%s", $1);}
-		  | ONTOLOGIA TRIPLOS										{asprintf(&$$, "\n%s\n%s", $1,$2);}
+Ontologia : Triplo													{asprintf(&$$, "\n%s", $1);}
+		  | Ontologia Triplo										{asprintf(&$$, "\n%s\n%s", $1,$2);}
 		  ;
 
-TRIPLOS : SUJEITO LISTADUPLOS 									{asprintf(&$$, "%s %s", $1,$2);}
+Triplo : SUJEITO '.'												{asprintf(&$$, "%s", $1);}
+       | SUJEITO ',' ListaDuplos 									{asprintf(&$$, "%s %s", $1,$3);}
 		;
 
 
-LISTADUPLOS : PREDICADOS OBJETO ',' LISTADUPLOS 				{asprintf(&$$, "%s %s %s", $1,$2,$4);}
-		    | PREDICADOS OBJETO ';' LISTADUPLOS	    	    	{asprintf(&$$, "%s %s %s", $1,$2,$4);}
-		    | OBJETO ';' LISTADUPLOS	    					{asprintf(&$$, "%s %s", $1,$3);}
-		    | PREDICADOS OBJETO '.'             				{asprintf(&$$, "%s %s", $1,$2);}
-		    | OBJETO '.'	    								{asprintf(&$$, "%s", $1);}
+ListaDuplos : PREDICADO Objeto ',' ListaDuplos 					{asprintf(&$$, "%s %s %s", $1,$2,$4);}
+		    | PREDICADO Objeto ';' ListaDuplos	    	    	{asprintf(&$$, "%s %s %s", $1,$2,$4);}
+		    | Objeto ';' ListaDuplos	    					{asprintf(&$$, "%s %s", $1,$3);}
+		    | PREDICADO Objeto '.'             					{asprintf(&$$, "%s %s", $1,$2);}
+		    | Objeto '.'	    								{asprintf(&$$, "%s", $1);}
 		    ;
 
 
-PREDICADOS : TIPOS    										{asprintf(&$$, "%s", $1);}
-		   | RELACAO 										{asprintf(&$$, "%s", $1);}
-		   ;
-
-
-OBJETO : SUJEITO												{asprintf(&$$, "%s", $1);}
+Objeto : SUJEITO												{asprintf(&$$, "%s", $1);}
 	   | CONCEITO   											{asprintf(&$$, "%s", $1);}
+	   | STRING													{asprintf(&$$, "%s", $1);}
+	   | NUM													{asprintf(&$$, "%d", $1);}
 	   ;
 
 
 %%
 
-#include "lex.yy.c"
 
 int yyerror(char* s){
     printf("Erro: %s \n",s);
@@ -73,4 +70,3 @@ int main(){
     yyparse();
     return 0;
 }
-

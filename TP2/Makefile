@@ -1,3 +1,5 @@
+
+
 ontologia: y.tab.o lex.yy.o estrutura.o
 	gcc -o  ontologia  y.tab.o lex.yy.o estrutura.o
 
@@ -16,8 +18,5 @@ lex.yy.c: ontologia.l y.tab.h
 
 clean:
 	rm -f ontologia lex.yy.c lex.yy.o y.tab.h y.tab.o y.tab.c
-
-
-
 
 
