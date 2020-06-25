@@ -19,22 +19,15 @@
 
 \#.*                            {;}     
 
-^:[A-Za-z_]+([0-9]{4})? 		            {yylval.str = strdup(yytext); return NOME;}
-
-:Pessoa                                     {return PESSOA;}
-
-:Sexo" ":Masculino                          {return MASCULINO;}
-
-:Sexo" ":Feminino                           {return FEMININO;} 
+^:[A-Za-z_]+([0-9]{4})? 		{yylval.str = strdup(yytext+1); return SUJEITO; printf("Printou o nome\n");}
  
-:[a-z][a-zA-Z]+" "                          {yylval.str = strdup(yytext); return RELACAO;}
+:[a-z][a-zA-Z]+\s               {yylval.str = strdup(yytext+1); return RELACAO; printf("Printou o Relacao\n");}
 
-:[A-Za-z_]+([0-9]{4})?" "[\.;]                {yylval.str = strdup(yytext); return NOME;}
+:[A-Za-z_]+([0-9]{4})?\s[\.;]   {yylval.str = strdup(yytext+1); return SUJEITO; printf("Printou o Nome\n");}
 
-[A-Za-z]+                                   {yylval.str = strdup(yytext); return STRING;}  //quando é uma string
+:[A-Za-z]+                      {yylval.str = strdup(yytext+1); return CONCEITO; printf("Printou o Conceito\n");}
 
-[0-9]+                                      {yylval.value = atoi(yytext); return NUM;}     //quando é um num
-
+[a-z:]+:[a-z]+					{yylval.str = strdup(yytext+4); return TIPOS; printf("Printou o Tipos\n");}
 
 .			{;}
 

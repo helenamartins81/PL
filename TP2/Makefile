@@ -11,7 +11,7 @@ y.tab.c y.tab.h: ontologia.y estrutura.h
 	yacc -d -v ontologia.y
 
 lex.yy.c: ontologia.l y.tab.h
-	flex ontologia.l
+	flex -d ontologia.l
 
 
 clean:
