@@ -1,0 +1,6 @@
+digraph familytree {
+	Carlos -> John [label = maeDe] 
+	John -> Sei la [label = maeDe] 
+	Sei la -> Pinguim [label = maeDe] 
+	Okay -> Okay [label = maeDe] 
+}

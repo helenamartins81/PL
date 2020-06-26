@@ -12,6 +12,7 @@ Ontologia inicializaOntologia(){
 	Ontologia ont = malloc(sizeof(struct ontologia));
 	ont->individuo = NULL;
 	ont->next = NULL;
+	ont->sucesso = 1;
 
 	return ont;
 }
@@ -23,7 +24,7 @@ Relacoes inicializaRelacao(){
 	Relacoes rels = malloc(sizeof(struct relacoes));
 	rels->relacao = NULL;
 	rels->objeto = NULL;
-
+	rels->sucesso = 1;
 	rels->next = NULL;
 
 	return rels;
@@ -35,7 +36,7 @@ Individuo inicializaIndividuo() {
 	Individuo ind = malloc(sizeof(struct individuo));
 	ind->sujeito = NULL;
 	ind->conceito = NULL;
-
+	ind->sucesso = 1;
 	ind->relacoes = NULL;
 
 	return ind;
@@ -49,7 +50,7 @@ Individuo inicializaIndividuo2(char* sujeito, char* conceito, int sucesso, Relac
 	Individuo ind = malloc(sizeof(struct individuo));
 	ind->sujeito = strdup(sujeito);
 	ind->conceito = strdup(conceito);
-
+	ind->sucesso = sucesso;
 	ind->relacoes = relacoes;
 	
 }
@@ -60,8 +61,10 @@ Relacoes inicializaRelacao2(char* relacao, char* objeto, int sucesso) {
 	
     	rel->relacao = strdup(relacao);
 	rel->objeto = strdup(objeto);
+	
+	printf("%s \n", rel->relacao);
 
-
+	rel->sucesso = 1;
 	rel->next = NULL;
 
 
@@ -72,6 +75,7 @@ Ontologia inicializaOntologia2(Individuo ind, int sucesso){
 
 	Ontologia o = malloc(sizeof(struct ontologia));
 	o->individuo = ind;
+	o->sucesso = sucesso;
 	o->next = NULL;
 
 
@@ -91,7 +95,7 @@ void adicionaIndividuoComplex(Ontologia ont, char* nome, char* conceito, Relacoe
     while(ont->next != NULL){
         ont = ont -> next;
     }
-    //ont -> next = ind;
+    ont -> next = ind;
 }
 
 
@@ -130,6 +134,7 @@ void adicionaRelacao(Relacoes relacoes, Relacoes relacao) {
 
 
 	if (relacoes==NULL) {
+ 
 		relacoes = relacao;
 	}
 
@@ -139,7 +144,20 @@ void adicionaRelacao(Relacoes relacoes, Relacoes relacao) {
 
 }
 
+void adicionaRelacaoAIndividuo(Individuo ind, Relacoes relacao) {
 
+	if (ind->relacoes==NULL) {
+		printf("OLA");
+		ind->relacoes = relacao;
+	}
+
+	for(;ind->relacoes->next!=NULL;ind->relacoes = ind->relacoes->next);
+
+	ind->relacoes->next = relacao;
+
+
+
+}
 
 
 // Imprimir cenas
@@ -156,8 +174,29 @@ void imprimeOntologias(Ontologia o){
 
 	while(o!=NULL){
 		printf("%s\n", o->individuo->sujeito);
+		printf("%d\n", o->sucesso);
 		o = o->next;
 	}
 
 
 }
+
+void writeOntologia(Ontologia o) {
+	FILE *fp = fopen("sample.dot","w"); 
+	fprintf(fp,"digraph familytree {\n");
+	while(o!=NULL){
+		
+		while(o->individuo->relacoes!=NULL) {
+			//printf("Dsoajdosa\n");
+			fprintf(fp,"	%s -> %s [label = %s] \n", o->individuo->sujeito,o->individuo->relacoes->objeto,o->individuo->relacoes->relacao);
+			o->individuo->relacoes = o->individuo->relacoes->next;
+		}	
+			
+		o = o->next; 
+	}
+	fprintf(fp,"}\n");
+
+
+	fclose(fp);
+}
+
