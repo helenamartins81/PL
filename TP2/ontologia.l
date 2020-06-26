@@ -29,19 +29,19 @@
 
 :Pessoa                                {printf("\nAQUI!\n");yylval.str = strdup(yytext+1); return CONCEITO;}
 
-":temMae"                              {yylval.str = strdup(yytext+1); return PREDICADO;} 
-":temPai"                              {yylval.str = strdup(yytext+1); return PREDICADO;} 
-":temFilho"                            {yylval.str = strdup(yytext+1); return PREDICADO;} 
-":temAvô"                              {yylval.str = strdup(yytext+1); return PREDICADO;} 
-":temAvó"                              {yylval.str = strdup(yytext+1); return PREDICADO;} 
+":temMae"                              {yylval.str = strdup(yytext+1); BEGIN REL; return PREDICADO; } 
+":temPai"                              {yylval.str = strdup(yytext+1); BEGIN REL; return PREDICADO; } 
+":temFilho"                            {yylval.str = strdup(yytext+1); BEGIN REL; return PREDICADO; } 
+":temAvô"                              {yylval.str = strdup(yytext+1); BEGIN REL; return PREDICADO; } 
+":temAvó"                              {yylval.str = strdup(yytext+1); BEGIN REL; return PREDICADO; } 
 
 
 
-<REL>" ":[A-Za-z_]+([0-9]{4})?" "[\.;]    {yylval.str = strdup(yytext+1); return SUJEITO;}  // {yylval.str = strdup(yytext); return NOME;}
+<REL>" ":[A-Za-z_]+([0-9]{4})?          {yylval.str = strdup(yytext+2); BEGIN INITIAL; return SUJEITO;}  // {yylval.str = strdup(yytext); return NOME;}
 
-:[A-Za-z]+                                {yylval.str = strdup(yytext+1); return STRING;}   // {yylval.str = strdup(yytext); return STRING;}  //quando é uma string
+:[A-Za-z]+                             {yylval.str = strdup(yytext+2); return STRING;}   // {yylval.str = strdup(yytext); return STRING;}  //quando é uma string
 
-:[0-9]+                                   {yylval.value = atoi(strdup(yytext+1)); return NUM;}   // {yylval.value = atoi(yytext); return NUM;}     //quando é um num
+:[0-9]+                                {yylval.value = atoi(strdup(yytext+1)); return NUM;}   // {yylval.value = atoi(yytext); return NUM;}     //quando é um num
 
 .           {;}
 
