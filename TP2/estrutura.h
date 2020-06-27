@@ -1,41 +1,42 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <glib.h>
 
 
-
-typedef struct relacoes
+typedef struct relacao
 {
-    char* relacao;
-    char* objeto;
-    struct relacoes *next;
-}*Relacoes;
+    char *relacao;
+    char *objeto;
+} * Relacao;
+
+typedef struct individuo
+{
+    char *sujeito;
+    GSList *relacao;
+} * Individuo;
 
 
-
-typedef struct individuo{
-    char* sujeito;
-    char* conceito;
-     Relacoes relacoes;
-}*Individuo ;
-
-
-
-
+/*
 typedef struct ontologia
 {
-    Individuo individuo;
-    struct ontologia *next;
-}*Ontologia;
+    GSList *individuo;
+} * Ontologia;
+*/
 
 
 
-
-
+/*
 Ontologia inicializa();
-void adicionaIndividuo(Ontologia ont, char* nome, char* conceito, Relacoes* relacoes);
-//void adicionaRelacao(Relacoes relacoes, char* rel, char* obj);
+void adicionaIndividuo(Ontologia ont, Individuo ind);
+void adicionaRelacoes(Relacoes relacao, Individuo ind);
+void adicionaRelacao(char* rel, char*obj, GSList* relacoes);
+Relacoes* criaRelacao(char* rel, char* objeto);
 void imprimeSujeito(Ontologia o);
 void imprimirInfo(Ontologia o);
+*/
 
 
+
+Individuo newIndividuo (char* nome, GSList* relacoes);
+Relacao newRelacao (char* relacao, char* obj);
