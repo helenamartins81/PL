@@ -43,7 +43,9 @@
 
 :[0-9]+                                {yylval.value = atoi(strdup(yytext+1)); return NUM;}   
 
+
 .           {;}
+
 
 
 %%
