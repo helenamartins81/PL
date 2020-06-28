@@ -1,5 +1,5 @@
-ontologia: y.tab.o lex.yy.o estrutura.o
-	gcc -o  ontologia  y.tab.o lex.yy.o estrutura.o 
+ontologia: y.tab.o lex.yy.o 
+	gcc -o  ontologia  y.tab.o lex.yy.o 
 
 y.tab.o: y.tab.c
 	gcc -c y.tab.c
@@ -7,7 +7,7 @@ y.tab.o: y.tab.c
 lex.yy.o: lex.yy.c y.tab.h
 	gcc -c lex.yy.c
 
-y.tab.c y.tab.h: ontologia.y estrutura.h
+y.tab.c y.tab.h: 
 	yacc -d -v ontologia.y
 
 lex.yy.c: ontologia.l

@@ -74,7 +74,5 @@ int yyerror(char* s){
 int main(){
 
     yyparse();
-	//writeOntologia(o);
-
     return 0;
 }

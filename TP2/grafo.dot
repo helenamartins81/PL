@@ -3,83 +3,9 @@ digraph familytree{
 	node [shape=box]
 	graph [rankdir="LR",fontname="helvetica", ranksep=1.5, nodesep=1.5, overlap="false", splines="true"]
 	size="71,41";
-	Abilio_Silva_Ramalho -> {Custodia_Azevedo_1867[xlabel="temMae"]
- 	Manuel_Silva_Ramalho_1866[xlabel="temPai"]};
- 	Albina_Esteves_Araujo_1910 -> {Maria_Araujo_1884[xlabel="temMae"]
- 	Henrique_Luiz_Araujo_1867[xlabel="temPai"]};
- 	Ana_Margarida_Ribeiro_Leite_1980 -> {Maria_Margarida_Ribeiro_1954[xlabel="temMae"]
- 	Rui_Alberto_Araujo_Leite_1948[xlabel="temPai"]};
- 	Ana_Silva_Ramalho -> {Custodia_Azevedo_1867[xlabel="temMae"]
- 	Manuel_Silva_Ramalho_1866[xlabel="temPai"]};
- 	Antonio_Silva_Ramalho; 	Antonio_Silva_Ramalho_1904 -> {Custodia_Azevedo_1867[xlabel="temMae"]
- 	Manuel_Silva_Ramalho_1866[xlabel="temPai"]};
- 	Arminda_Silva_Ramalho -> {Custodia_Azevedo_1867[xlabel="temMae"]
- 	Manuel_Silva_Ramalho_1866[xlabel="temPai"]};
- 	Christina_Rosa_Silva_Santos_1879 -> {Pessoa};
- 	Custodia_Azevedo_1867 -> {Maria_Goncalves_Azevedo[xlabel="temMae"]
- 	Jose_Francisco_Ramos_Mouco[xlabel="temPai"]};
- 	Emilia_Esteves_Araujo_1908 -> {Maria_Araujo_1884[xlabel="temMae"]
- 	Henrique_Luiz_Araujo_1867[xlabel="temPai"]};
- 	Ezequiel_Silva_Ramalho -> {Custodia_Azevedo_1867[xlabel="temMae"]
- 	Manuel_Silva_Ramalho_1866[xlabel="temPai"]};
- 	Filomena_Esteves_Araujo_1927 -> {Maria_Araujo_1884[xlabel="temMae"]
- 	Henrique_Luiz_Araujo_1867[xlabel="temPai"]};
- 	Flora_Castilho_Couto_Leite -> {Pessoa};
- 	Florinda_Alves_Santos -> {Christina_Rosa_Silva_Santos_1879[xlabel="temMae"]
- 	Joze_Silva_Santos_1879[xlabel="temPai"]};
- 	Generosa_Silva_Ramalho -> {Custodia_Azevedo_1867[xlabel="temMae"]
- 	Manuel_Silva_Ramalho_1866[xlabel="temPai"]};
- 	Henrique_Luis_Esteves_Araujo_1924 -> {Maria_Araujo_1884[xlabel="temMae"]
- 	Henrique_Luiz_Araujo_1867[xlabel="temPai"]};
- 	Henrique_Luiz_Araujo_1867; 	Henrique_Marcal_Araujo_Leite_1943 -> {Maria_Esteves_Araujo_1912[xlabel="temMae"]
- 	Marcal_Aristides_Costa_Leite_1909[xlabel="temPai"]};
- 	Henrique_Miguel_Cabrita_Araujo_Leite_1971 -> {Maria_Otilia_Araujo_Leite_1944[xlabel="temMae"]
- 	Henrique_Marcal_Araujo_Leite_1943[xlabel="temPai"]};
- 	Ilda_Santos_Ramalho_1949 -> {Maria_Alves_Santos_1906[xlabel="temMae"]
- 	Antonio_Silva_Ramalho_1904[xlabel="temPai"]};
- 	Isabel_Maria_Cabrita_Araujo_Leite_1971 -> {Maria_Otilia_Araujo_Leite_1944[xlabel="temMae"]
- 	Henrique_Marcal_Araujo_Leite_1943[xlabel="temPai"]};
- 	Jose_Carlos_Leite_Ramalho_1967 -> {Maria_Flora_Araujo_Leite_1941[xlabel="temMae"]
- 	Jose_Santos_Ramalho_1942[xlabel="temPai"]};
- 	Jose_Emilio_Esteves_Araujo_1916 -> {Maria_Araujo_1884[xlabel="temMae"]
- 	Henrique_Luiz_Araujo_1867[xlabel="temPai"]};
- 	Jose_Francisco_Ramos_Mouco -> {Pessoa};
- 	Jose_Santos_Ramalho_1942 -> {Maria_Alves_Santos_1906[xlabel="temMae"]
- 	Antonio_Silva_Ramalho_1904[xlabel="temPai"]};
- 	Joze_Silva_Santos_1879 -> {Pessoa};
- 	Luis_Esteves_Araujo_1918 -> {Maria_Araujo_1884[xlabel="temMae"]
- 	Henrique_Luiz_Araujo_1867[xlabel="temPai"]};
- 	Manuel_Carlos_Santos_Ramalho -> {Maria_Alves_Santos_1906[xlabel="temMae"]
- 	Antonio_Silva_Ramalho_1904[xlabel="temPai"]};
- 	Manuel_Fernando_Santos_Ramalho -> {Maria_Alves_Santos_1906[xlabel="temMae"]
- 	Antonio_Silva_Ramalho_1904[xlabel="temPai"]};
- 	Manuel_Silva_Ramalho_1866 -> {Maria_Dias_Reis[xlabel="temMae"]
- 	Antonio_Silva_Ramalho[xlabel="temPai"]};
- 	Marcal_Aristides_Costa_Leite_1909 -> {Flora_Castilho_Couto_Leite[xlabel="temMae"]
- 	Marcal_Costa_Leite[xlabel="temPai"]};
- 	Marcal_Costa_Leite -> {Pessoa};
- 	Maria_Alves_Santos_1906 -> {Christina_Rosa_Silva_Santos_1879[xlabel="temMae"]
- 	Joze_Silva_Santos_1879[xlabel="temPai"]};
- 	Maria_Araujo_1884 -> {Pessoa};
- 	Maria_Dias_Reis -> {Pessoa};
- 	Maria_Esteves_Araujo_1912 -> {Maria_Araujo_1884[xlabel="temMae"]
- 	Henrique_Luiz_Araujo_1867[xlabel="temPai"]};
- 	Maria_Flora_Araujo_Leite_1941 -> {Maria_Esteves_Araujo_1912[xlabel="temMae"]
- 	Marcal_Aristides_Costa_Leite_1909[xlabel="temPai"]};
- 	Maria_Flora_Santos_Ramalho -> {Maria_Alves_Santos_1906[xlabel="temMae"]
- 	Antonio_Silva_Ramalho_1904[xlabel="temPai"]};
- 	Maria_Goncalves_Azevedo -> {Pessoa};
- 	Maria_Helena_Leite_Ramalho_1968 -> {Maria_Flora_Araujo_Leite_1941[xlabel="temMae"]
- 	Jose_Santos_Ramalho_1942[xlabel="temPai"]};
- 	Maria_Margarida_Ribeiro_1954 -> {Pessoa};
- 	Maria_Otilia_Araujo_Leite_1944 -> {Pessoa};
- 	Rui_Alberto_Araujo_Leite_1948 -> {Maria_Esteves_Araujo_1912[xlabel="temMae"]
- 	Marcal_Aristides_Costa_Leite_1909[xlabel="temPai"]};
- 	Sara_Esteves_Araujo_1914 -> {Maria_Araujo_1884[xlabel="temMae"]
- 	Henrique_Luiz_Araujo_1867[xlabel="temPai"]};
- 	Teresa_Maria_Ribeiro_Leite_1985 -> {Maria_Margarida_Ribeiro_1954[xlabel="temMae"]
- 	Rui_Alberto_Araujo_Leite_1948[xlabel="temPai"]};
- 	Virginia_Esteves_Araujo_1921 -> {Maria_Araujo_1884[xlabel="temMae"]
- 	Henrique_Luiz_Araujo_1867[xlabel="temPai"]};
+	Helena_Pocas_Martins_1998 -> {Maria_do_Pranto_Martins_Goncalves_Pocas_1963[xlabel="temMae"]
+ 	Valdemar_de_Jesus_Mesquita_Martins_1947[xlabel="temPai"]};
+ 	Maria_do_Pranto_Martins_Goncalves_Pocas_1963 -> {Irene_Martins[xlabel="temMae"]
+ 	Silvino_Goncalves_Pocas_1919[xlabel="temPai"]};
 
 }
