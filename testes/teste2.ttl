@@ -1,4 +1,0 @@
-###  http://www.di.uminho.pt/prc/ontologies/2020/prc-genoa#ePaiDe
-:ePaiDe rdf:type owl:ObjectProperty ;
-        rdfs:subPropertyOf :eProgenitorDe ;
-        owl:inverseOf :temPai .

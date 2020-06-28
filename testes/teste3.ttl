@@ -1,3 +1,0 @@
-:ePaiDe rdf:type owl:ObjectProperty ;
-        rdfs:subPropertyOf :eProgenitorDe ;
-        owl:inverseOf :temPai .
